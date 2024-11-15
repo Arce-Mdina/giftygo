@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     `;
 
     const response = await openai.createChatCompletion({
-      model: "gpt-4",
+      model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
     });
