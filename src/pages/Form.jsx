@@ -19,26 +19,26 @@ const Form = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setRecommendations("");
-
+  
     try {
-      // Send data to the serverless function
       const response = await fetch("/api/generate-gift", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch recommendations");
+        // Attempt to parse the error response as JSON
+        const errorData = await response.json().catch(() => null);
+        const errorMessage = errorData?.error || "Failed to fetch recommendations";
+        throw new Error(errorMessage);
       }
-
+  
       const data = await response.json();
       setRecommendations(data.recommendations);
     } catch (err) {
@@ -48,6 +48,37 @@ const Form = () => {
       setLoading(false);
     }
   };
+  
+
+  // // Handle form submission
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
+  //   setRecommendations("");
+
+  //   try {
+  //     // Send data to the serverless function
+  //     const response = await fetch("/api/generate-gift", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.error || "Failed to fetch recommendations");
+  //     }
+
+  //     const data = await response.json();
+  //     setRecommendations(data.recommendations);
+  //   } catch (err) {
+  //     console.error("Error:", err.message);
+  //     setError(err.message || "Something went wrong. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div style={{ maxWidth: "600px", margin: "auto", padding: "20px" }}>
